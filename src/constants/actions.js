@@ -1,0 +1,4 @@
+export const CIRCLE_LEFT_UP = 'CIRCLE_LEFT_UP';
+export const CIRCLE_LEFT_DOWN = 'CIRCLE_LEFT_DOWN';
+export const CIRCLE_RIGHT_UP = 'CIRCLE_RIGHT_UP';
+export const CIRCLE_RIGHT_DOWN = 'CIRCLE_RIGHT_DOWN';

@@ -1,0 +1,17 @@
+{
+    "extends": "airbnb",
+    "parser": "babel-eslint",
+    "rules": {
+        "default-case": 0,
+        "comma-dangle": 0,
+        "indent": ["error", 4],
+        "prefer-const": ["error", {
+            "destructuring": "any"
+        }],
+        "no-underscore-dangle": "off"
+    },
+    "env": {
+        "browser": true,
+        "node": true
+    }
+}
