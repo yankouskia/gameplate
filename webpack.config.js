@@ -11,18 +11,15 @@ const webpackConfig = {
         path: path.join(__dirname, './dist/'),
         filename: '[name].bundle.js'
     },
+    mode: process.env.NODE_ENV === 'production' ? 'production' : 'dev',
     module: {
         rules: [
             {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: 'babel-loader'
-            }, {
                 test: /\.css$/,
                 use: 'css-loader'
             }, {
                 test: /\.(woff|woff2|ttf|svg|eot|png|jpg)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                use: 'file-loader?name=fonts/[name].[ext]'
+                use: 'file-loader'
             }
         ]
     },
@@ -30,7 +27,9 @@ const webpackConfig = {
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
         }),
-        new HtmlWebpackPlugin()
+        new HtmlWebpackPlugin({
+            title: 'Click somewhere',
+        })
     ],
     resolve: {
         modules: ['node_modules', path.resolve('./src/client')],
@@ -45,14 +44,7 @@ const webpackConfig = {
 
 if (process.env.NODE_ENV === 'production') {
     const additionalPlugins = [
-        new webpack.optimize.OccurrenceOrderPlugin(false),
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false,
-                drop_debugger: true,
-                drop_console: true
-            }
-        })
+        new webpack.optimize.OccurrenceOrderPlugin(false)
     ];
     webpackConfig.plugins = webpackConfig.plugins.concat(additionalPlugins);
 } else {
