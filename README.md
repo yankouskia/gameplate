@@ -1,5 +1,5 @@
 # gameplate
-Boilerplate for creating simple game
+Boilerplate for creating simple game using **WebGL**
 
 ### Prepare
 ```sh
