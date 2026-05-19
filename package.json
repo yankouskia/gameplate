@@ -77,7 +77,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prepublishOnly": "pnpm clean && pnpm install && pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm pkg:validate",
-    "pkg:validate": "publint && attw --pack . --profile esm-only",
+    "pkg:validate": "publint",
+    "pkg:validate:full": "publint && attw --pack . --profile esm-only",
     "release": "changeset publish",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -90,6 +91,7 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.17.0",
     "@changesets/cli": "^2.27.9",
+    "@eslint/js": "^9.18.0",
     "@size-limit/preset-small-lib": "^11.1.6",
     "@types/node": "^22.10.5",
     "@vitest/coverage-v8": "^2.1.8",

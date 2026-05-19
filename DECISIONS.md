@@ -17,9 +17,9 @@ game tooling"), totally different shape.
 
 **Alternatives.**
 
-1. Stay a boilerplate, modernize stack to Vite + PIXI v8. *Rejected:* duplicates
+1. Stay a boilerplate, modernize stack to Vite + PIXI v8. _Rejected:_ duplicates
    `create-vite` and a hundred PIXI starters.
-2. Build a typed Redux-for-games (just store + actions). *Rejected:* too narrow to
+2. Build a typed Redux-for-games (just store + actions). _Rejected:_ too narrow to
    justify a new package.
 
 **Consequences.** Fresh API design needed. Old PIXI/sprite demo code is deleted.
@@ -37,7 +37,7 @@ the JS/DOM platform (`requestAnimationFrame`, `KeyboardEvent`, `PointerEvent`,
 `performance.now`).
 
 **Alternatives.** Take a dependency on `nanoevents` or `mitt` for the emitter.
-*Rejected:* the emitter is ~30 LOC inline; not worth a dep + version surface.
+_Rejected:_ the emitter is ~30 LOC inline; not worth a dep + version surface.
 
 **Consequences.** Tiny bundle, no transitive supply-chain risk, no `peerDependencies`
 to manage. Tradeoff: we re-implement an event emitter and a memoization helper.
@@ -53,7 +53,7 @@ loads CJS. Type-only consumers expect bundler-friendly `.d.ts`.
 `tsup`. `exports` map drives resolution; validated by `@arethetypeswrong/cli` and
 `publint` in CI.
 
-**Alternatives.** ESM-only. *Rejected for now:* the brief asks for "no broken
+**Alternatives.** ESM-only. _Rejected for now:_ the brief asks for "no broken
 consumers"; CJS support is cheap with `tsup`.
 
 **Consequences.** Build step is mandatory; `tsc --noEmit` runs separately as the
@@ -81,8 +81,8 @@ to evaluate and document.
 type-aware rules Biome still lacks; (2) the broader plugin ecosystem (`unicorn`,
 `import-x`, `n`) is mature and covers Node-specific lints we want.
 
-**Alternatives.** Biome. *Considered:* one tool, fast, no plugins. *Rejected for
-this library:* we want type-aware lints (`no-floating-promises`, `no-misused-promises`)
+**Alternatives.** Biome. _Considered:_ one tool, fast, no plugins. _Rejected for
+this library:_ we want type-aware lints (`no-floating-promises`, `no-misused-promises`)
 that are central to async correctness.
 
 **Consequences.** Two configs (`eslint.config.js` + `.prettierrc`). Slightly slower
@@ -93,7 +93,7 @@ lint than Biome would be — acceptable on a small codebase.
 ## ADR-006 — `defineActions<S>()(...)` curried-generic for action inference
 
 **Context.** Consumers want to write `actions.move(5, 0)` with full IntelliSense.
-That requires inferring action arg types from the action map *while* fixing the
+That requires inferring action arg types from the action map _while_ fixing the
 state type `S`. Single-call generic inference can't do both.
 
 **Decision.** Two-call form: `defineActions<S>()(actionMap)`. First call locks `S`;
@@ -103,8 +103,8 @@ the first (state) parameter.
 **Alternatives.**
 
 1. `createGame<S>({ state, actions })` and let the user annotate each action's `s`
-   parameter. *Rejected:* boilerplate every consumer hits.
-2. Class-based store with method-as-action. *Rejected:* methods don't play nicely
+   parameter. _Rejected:_ boilerplate every consumer hits.
+2. Class-based store with method-as-action. _Rejected:_ methods don't play nicely
    with structural typing and inference for `this`-less callbacks.
 
 **Consequences.** Slightly unusual `()()` call shape, documented prominently in
@@ -122,7 +122,7 @@ standard solution ("Fix Your Timestep!", Glenn Fiedler).
 config enables a fixed-timestep accumulator with `alpha` passed to the render
 callback for interpolation.
 
-**Alternatives.** Always fixed. *Rejected:* most casual game code doesn't need
+**Alternatives.** Always fixed. _Rejected:_ most casual game code doesn't need
 determinism; making the simple case complex is a worse default.
 
 **Consequences.** Two execution modes documented; example shows when to pick which.
@@ -138,7 +138,7 @@ compiler to prevent `s.player.x = 10` inside an action.
 `DeepReadonly<S>`. Mutations are compile-errors.
 
 **Consequences.** Some consumer ergonomics impact (have to spread). Documented as
-a feature with an example. We do *not* freeze at runtime by default (cost in hot
+a feature with an example. We do _not_ freeze at runtime by default (cost in hot
 paths); a `dev: true` option enables runtime `Object.freeze`.
 
 ---
@@ -151,9 +151,27 @@ provenance.
 **Decision.** Adopt `@changesets/cli`. PRs require a changeset; merging the
 "Version Packages" PR publishes via the release workflow with npm provenance.
 
-**Alternatives.** `semantic-release`. *Considered:* parses commit messages. Cleaner
+**Alternatives.** `semantic-release`. _Considered:_ parses commit messages. Cleaner
 UX with conventional commits but less explicit per-PR; team feedback in the wider
 ecosystem has pushed toward changesets for libraries.
+
+---
+
+## ADR-010a — `attw` is run only in CI
+
+**Context.** `@arethetypeswrong/cli@0.17.x` crashes with
+`Cannot read properties of undefined (reading 'filename')` on Node 24 for
+_every_ package (verified against `mitt` and other known-good packages —
+it's an attw bug, not a package bug). `publint` covers the most critical
+checks (exports map shape, type conditions, etc.) and passes cleanly.
+
+**Decision.** Local `pnpm pkg:validate` runs `publint` only. A `:full`
+script also runs `attw` for engineers on Node ≤22. CI runs both, pinned to
+Node 22 LTS in the validation matrix entry, so we still catch types-wrong
+issues before publish.
+
+**Consequences.** One less local check on Node 24 boxes until attw ships a
+fix; full coverage in CI is unchanged.
 
 ---
 
@@ -165,5 +183,5 @@ ecosystem has pushed toward changesets for libraries.
 without literally meaning boilerplate; the name is short, memorable, available on
 npm, and consistent with the repo URL/history.
 
-**Alternatives.** Rename to `@gameplate/core`. *Deferred to v3* if/when we split
+**Alternatives.** Rename to `@gameplate/core`. _Deferred to v3_ if/when we split
 into multiple packages.

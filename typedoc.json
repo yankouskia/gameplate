@@ -1,0 +1,30 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/index.ts"],
+  "out": "docs/api",
+  "tsconfig": "tsconfig.json",
+  "name": "gameplate",
+  "readme": "README.md",
+  "includeVersion": true,
+  "excludeInternal": true,
+  "excludePrivate": true,
+  "excludeProtected": false,
+  "categorizeByGroup": true,
+  "navigationLinks": {
+    "GitHub": "https://github.com/yankouskia/gameplate",
+    "npm": "https://www.npmjs.com/package/gameplate"
+  },
+  "plugin": ["typedoc-material-theme"],
+  "themeColor": "#7c3aed",
+  "sort": ["source-order"],
+  "categoryOrder": [
+    "Game",
+    "State & Actions",
+    "Loop",
+    "Input",
+    "Scenes",
+    "Selectors",
+    "Utilities",
+    "*"
+  ]
+}
