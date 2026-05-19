@@ -1,49 +1,139 @@
 {
   "name": "gameplate",
-  "version": "1.0.0",
-  "description": "Boilerplate for creating simple game",
-  "main": "src/index.js",
-  "scripts": {
-    "dev": "webpack-dev-server --hot --inline --port 3000",
-    "build": "NODE_ENV=production webpack"
+  "version": "2.0.0",
+  "description": "Tiny, zero-dependency, fully-typed TypeScript framework for browser & headless games — state, loop, input, scenes. Bring any renderer.",
+  "keywords": [
+    "game",
+    "game-engine",
+    "game-framework",
+    "game-loop",
+    "state-machine",
+    "fsm",
+    "typescript",
+    "headless",
+    "canvas",
+    "webgl",
+    "browser",
+    "tiny",
+    "zero-dependencies",
+    "esm",
+    "renderer-agnostic"
+  ],
+  "homepage": "https://yankouskia.github.io/gameplate/",
+  "bugs": {
+    "url": "https://github.com/yankouskia/gameplate/issues"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yankouskia/gameplate.git"
   },
-  "keywords": [
-    "game",
-    "redux",
-    "pixi",
-    "webgl",
-    "eslint",
-    "webpack"
-  ],
-  "author": "yankouskia aleksandr.yankovskiy@gmail.com",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/yankouskia/gameplate/issues"
+  "author": {
+    "name": "Alex Yankouski",
+    "email": "alex.yankouski@gmail.com",
+    "url": "https://github.com/yankouskia"
   },
-  "homepage": "https://github.com/yankouskia/gameplate#readme",
-  "dependencies": {
-    "lodash": "^4.17.11",
-    "pixi.js": "^4.4.3",
-    "redux": "^4.0.1"
+  "funding": "https://github.com/sponsors/yankouskia",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=20.10"
+  },
+  "packageManager": "pnpm@9.15.4",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "tsup",
+    "clean": "rm -rf dist coverage .turbo node_modules/.cache",
+    "dev": "tsup --watch",
+    "docs": "typedoc",
+    "docs:serve": "pnpm docs && npx serve docs/api",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepublishOnly": "pnpm clean && pnpm install && pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm pkg:validate",
+    "pkg:validate": "publint && attw --pack . --profile esm-only",
+    "release": "changeset publish",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:bench": "vitest bench",
+    "typecheck": "tsc --noEmit",
+    "size": "size-limit",
+    "prepare": "simple-git-hooks"
   },
   "devDependencies": {
-    "babel-eslint": "^10.0.1",
-    "css-loader": "^2.1.1",
-    "eslint": "^5.16.0",
-    "eslint-config-airbnb": "^17.1.0",
-    "eslint-plugin-import": "^2.17.2",
-    "eslint-plugin-jsx-a11y": "^6.2.1",
-    "eslint-plugin-react": "^7.13.0",
-    "file-loader": "^3.0.1",
-    "html-webpack-plugin": "^3.2.0",
-    "raw-loader": "^2.0.0",
-    "webpack": "^4.31.0",
-    "webpack-cli": "^3.3.2",
-    "webpack-dev-server": "^3.4.1",
-    "webpack-notifier": "^1.7.0"
+    "@arethetypeswrong/cli": "^0.17.0",
+    "@changesets/cli": "^2.27.9",
+    "@size-limit/preset-small-lib": "^11.1.6",
+    "@types/node": "^22.10.5",
+    "@vitest/coverage-v8": "^2.1.8",
+    "eslint": "^9.18.0",
+    "eslint-plugin-import-x": "^4.6.1",
+    "eslint-plugin-n": "^17.15.1",
+    "eslint-plugin-promise": "^7.2.1",
+    "eslint-plugin-unicorn": "^56.0.1",
+    "happy-dom": "^15.11.7",
+    "lint-staged": "^15.3.0",
+    "prettier": "^3.4.2",
+    "publint": "^0.3.0",
+    "simple-git-hooks": "^2.11.1",
+    "size-limit": "^11.1.6",
+    "tsup": "^8.3.5",
+    "typedoc": "^0.28.0",
+    "typedoc-material-theme": "^1.4.0",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.20.0",
+    "vitest": "^2.1.8"
+  },
+  "size-limit": [
+    {
+      "name": "core (esm)",
+      "path": "dist/index.js",
+      "limit": "4 kB",
+      "import": "*"
+    },
+    {
+      "name": "core (cjs)",
+      "path": "dist/index.cjs",
+      "limit": "5 kB"
+    }
+  ],
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   }
 }

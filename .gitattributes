@@ -1,0 +1,32 @@
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+
+# Treat lockfiles as binary for diff
+pnpm-lock.yaml -diff linguist-generated=true
+package-lock.json -diff linguist-generated=true
+yarn.lock -diff linguist-generated=true
+
+# Don't ship docs or test infra to npm
+/.github         export-ignore
+/.changeset      export-ignore
+/examples        export-ignore
+/test            export-ignore
+/docs            export-ignore
+/coverage        export-ignore
+/.editorconfig   export-ignore
+/.nvmrc          export-ignore
+/.node-version   export-ignore
+/.prettierrc     export-ignore
+/.prettierignore export-ignore
+/.gitattributes  export-ignore
+/eslint.config.js export-ignore
+/tsconfig.json   export-ignore
+/tsup.config.ts  export-ignore
+/typedoc.json    export-ignore
+/vitest.config.ts export-ignore
