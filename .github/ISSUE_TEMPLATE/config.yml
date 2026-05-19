@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Discussions
+    url: https://github.com/yankouskia/gameplate/discussions
+    about: Ask a question or share what you built with gameplate.
+  - name: Security
+    url: https://github.com/yankouskia/gameplate/security/advisories/new
+    about: Report a security vulnerability privately.

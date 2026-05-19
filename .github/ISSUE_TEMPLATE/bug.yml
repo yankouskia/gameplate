@@ -1,0 +1,49 @@
+name: Bug report
+description: Something is broken or not behaving as documented
+title: 'bug: '
+labels: ['bug', 'needs triage']
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: A clear description of the bug and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: A short code snippet, CodeSandbox/StackBlitz link, or repo.
+      render: ts
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: gameplate version
+      placeholder: '2.0.0'
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node version
+      placeholder: '22.x'
+  - type: dropdown
+    id: env
+    attributes:
+      label: Environment
+      multiple: true
+      options:
+        - Browser (Chromium)
+        - Browser (Firefox)
+        - Browser (Safari)
+        - Node
+        - Bun
+        - Deno
+        - Other (describe in repro)
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?

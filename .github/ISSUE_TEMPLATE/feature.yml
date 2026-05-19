@@ -1,0 +1,32 @@
+name: Feature request
+description: Propose a new API or capability
+title: 'feat: '
+labels: ['enhancement', 'needs triage']
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What does the missing capability prevent you from building today?
+    validations:
+      required: true
+  - type: textarea
+    id: shape
+    attributes:
+      label: Proposed shape
+      description: A rough API sketch. TypeScript snippet preferred.
+      render: ts
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - Core (must live in `gameplate`)
+        - Adjacent (could be a sibling package)
+        - Userland (could live outside)
+    validations:
+      required: true
