@@ -1,0 +1,148 @@
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 6rem 0 5rem;
+  text-align: center;
+  background:
+    radial-gradient(1200px 600px at 50% -20%, rgba(124, 58, 237, 0.22), transparent 60%),
+    radial-gradient(900px 500px at 80% 20%, rgba(255, 82, 119, 0.18), transparent 55%),
+    radial-gradient(900px 500px at 20% 30%, rgba(0, 210, 168, 0.14), transparent 55%);
+}
+
+.heroGlow {
+  position: absolute;
+  inset: -20% -10% auto -10%;
+  height: 70%;
+  background:
+    conic-gradient(
+      from 180deg at 50% 50%,
+      rgba(124, 58, 237, 0.16),
+      rgba(255, 82, 119, 0.16),
+      rgba(248, 180, 0, 0.12),
+      rgba(0, 210, 168, 0.14),
+      rgba(124, 58, 237, 0.16)
+    );
+  filter: blur(80px);
+  opacity: 0.7;
+  z-index: 0;
+  animation: spin 28s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.heroInner {
+  position: relative;
+  z-index: 1;
+}
+
+.heroTitle {
+  font-size: clamp(2.4rem, 6vw, 4.6rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 1.2rem 0 1rem;
+}
+
+.heroSub {
+  max-width: 760px;
+  margin: 0 auto 2rem;
+  font-size: 1.2rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.ctaPrimary {
+  background: var(--gp-grad);
+  border: none;
+  color: white !important;
+  box-shadow: 0 10px 30px -10px rgba(124, 58, 237, 0.6);
+}
+.ctaPrimary:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.ctaSecondary,
+.ctaGhost {
+  backdrop-filter: blur(4px);
+}
+
+.installRow {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.install {
+  font-family: var(--ifm-font-family-monospace);
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px solid rgba(124, 58, 237, 0.25);
+  color: var(--ifm-color-primary-darker);
+  font-size: 0.92rem;
+}
+
+[data-theme='dark'] .install {
+  background: rgba(167, 139, 250, 0.08);
+  color: var(--ifm-color-primary-lightest);
+  border-color: rgba(167, 139, 250, 0.25);
+}
+
+.quickstart {
+  padding: 4rem 0;
+}
+
+.qsCopy h2 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.qsList {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 1.5rem;
+}
+
+.qsList li {
+  margin: 0.5rem 0;
+  font-size: 1.02rem;
+}
+
+.compare {
+  padding: 4rem 0 6rem;
+  background:
+    linear-gradient(180deg, transparent, rgba(124, 58, 237, 0.04));
+}
+
+.compareTitle {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 2.5rem;
+  line-height: 1.15;
+}
+
+@media (max-width: 996px) {
+  .hero {
+    padding: 4rem 0 3rem;
+  }
+  .qsCopy {
+    margin-bottom: 2rem;
+  }
+}

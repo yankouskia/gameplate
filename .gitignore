@@ -12,8 +12,15 @@ coverage/
 .nyc_output/
 *.lcov
 
-# Generated docs
+# Generated docs (TypeDoc → API reference)
 docs/api/
+website/static/api/
+
+# Docusaurus
+website/node_modules/
+website/.docusaurus/
+website/build/
+website/.cache-loader/
 
 # Caches
 .cache/
