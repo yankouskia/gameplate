@@ -1,0 +1,71 @@
+name: Docs
+
+on:
+  push:
+    branches: [master, main]
+  workflow_dispatch:
+
+concurrency:
+  group: docs-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    name: Build docs (Docusaurus + TypeDoc)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      # Library install (provides TypeDoc and source for API generation).
+      - name: Install library deps
+        run: pnpm install --frozen-lockfile
+
+      # Build the library — the docs site imports `gameplate` as a linked
+      # workspace package so it can power the live homepage demo with the
+      # real `createGame`. The link resolves to `dist/`, so it must exist.
+      - name: Build library
+        run: pnpm build
+
+      # Generate the TypeDoc API reference into the website's static/api
+      # folder so Docusaurus ships it at /api/ inside the deployed site.
+      - name: Generate TypeDoc API site
+        run: pnpm exec typedoc --out website/static/api
+
+      # Install the docs site's deps and build it.
+      - name: Install website deps
+        working-directory: website
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build Docusaurus site
+        working-directory: website
+        run: pnpm build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: website/build
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
