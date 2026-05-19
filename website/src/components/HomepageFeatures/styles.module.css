@@ -1,0 +1,41 @@
+.features {
+  padding: 5rem 0 2rem;
+}
+
+.sectionTitle {
+  text-align: center;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 3rem;
+  line-height: 1.15;
+}
+
+.featureCol {
+  margin-bottom: 1.6rem;
+  display: flex;
+}
+
+.feature {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.featureIcon {
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 0.75rem;
+}
+
+.featureTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.featureBody {
+  font-size: 0.96rem;
+  color: var(--ifm-color-emphasis-700);
+  margin-bottom: 0;
+}

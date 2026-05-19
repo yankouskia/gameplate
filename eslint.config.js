@@ -12,6 +12,7 @@ export default tseslint.config(
       'coverage/**',
       'docs/api/**',
       'node_modules/**',
+      'website/**',
       'examples/*/dist/**',
       'examples/*/node_modules/**',
       '**/*.d.ts',
