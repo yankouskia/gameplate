@@ -1,6 +1,6 @@
 {
   "name": "gameplate",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Tiny, zero-dependency, fully-typed TypeScript framework for browser & headless games — state, loop, input, scenes. Bring any renderer.",
   "keywords": [
     "game",
