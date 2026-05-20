@@ -1,6 +1,6 @@
 {
   "name": "gameplate",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Tiny, zero-dependency, fully-typed TypeScript framework for browser & headless games — state, loop, input, scenes. Bring any renderer.",
   "keywords": [
     "game",
@@ -77,8 +77,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prepublishOnly": "pnpm clean && pnpm install && pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm pkg:validate",
-    "pkg:validate": "publint",
-    "pkg:validate:full": "publint && attw --pack . --profile esm-only",
+    "pkg:validate": "publint && node scripts/attw.mjs",
     "release": "changeset publish",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -89,7 +88,7 @@
     "prepare": "simple-git-hooks"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.17.0",
+    "@arethetypeswrong/core": "^0.18.2",
     "@changesets/cli": "^2.27.9",
     "@eslint/js": "^9.18.0",
     "@size-limit/preset-small-lib": "^11.1.6",
