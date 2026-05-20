@@ -7,33 +7,50 @@
  * exceeds ~32 KB decompresses into multiple chunks, so attw sees an empty
  * archive and crashes with `Cannot read properties of undefined (...filename)`.
  *
- * We sidestep the broken tarball path entirely: enumerate the exact files npm
- * would publish, hand them to `@arethetypeswrong/core` as an in-memory package,
- * and run the real `checkPackage` analysis. Same check, no decompression.
+ * We sidestep the broken tarball path entirely: enumerate the files npm would
+ * publish straight from disk, hand them to `@arethetypeswrong/core` as an
+ * in-memory package, and run the real `checkPackage` analysis. Same check,
+ * no tarball decompression and no `npm pack` subprocess (whose stdout the
+ * `prepare` lifecycle script would otherwise pollute).
  */
-import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
 import path from 'node:path';
 
 import { Package, checkPackage } from '@arethetypeswrong/core';
 
 const root = process.cwd();
-
-const npmPackOutput = execFileSync('npm', ['pack', '--dry-run', '--json', '--ignore-scripts'], {
-  cwd: root,
-  encoding: 'utf8',
-  stdio: ['ignore', 'pipe', 'ignore'],
-});
-const publishedFiles = JSON.parse(npmPackOutput)[0].files.map((f) => f.path);
-
 const pkgJson = JSON.parse(readFileSync(path.join(root, 'package.json'), 'utf8'));
+
+// npm always publishes these regardless of the `files` allowlist; union them
+// with `files` to reproduce the exact published set for this package.
+const alwaysIncluded = ['package.json', 'README.md', 'LICENSE', 'CHANGELOG.md'];
+const roots = [...new Set([...alwaysIncluded, ...(pkgJson.files ?? [])])];
+
+/** Recursively expand a file or directory into a flat list of relative paths. */
+function expand(relativePath) {
+  let stats;
+  try {
+    stats = statSync(path.join(root, relativePath));
+  } catch {
+    return []; // listed but absent (e.g. CHANGELOG.md before the first release)
+  }
+  if (stats.isDirectory()) {
+    return readdirSync(path.join(root, relativePath)).flatMap((child) =>
+      expand(path.join(relativePath, child)),
+    );
+  }
+  return [relativePath];
+}
 
 /** @type {Record<string, Uint8Array>} */
 const files = {};
-for (const relativePath of publishedFiles) {
-  files[`/node_modules/${pkgJson.name}/${relativePath}`] = readFileSync(
-    path.join(root, relativePath),
-  );
+for (const entry of roots) {
+  for (const relativePath of expand(entry)) {
+    const posixPath = relativePath.split(path.sep).join('/');
+    files[`/node_modules/${pkgJson.name}/${posixPath}`] = readFileSync(
+      path.join(root, relativePath),
+    );
+  }
 }
 
 const analysis = await checkPackage(new Package(files, pkgJson.name, pkgJson.version));
