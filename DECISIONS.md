@@ -157,21 +157,30 @@ ecosystem has pushed toward changesets for libraries.
 
 ---
 
-## ADR-010a — `attw` is run only in CI
+## ADR-010a — `attw` via a wrapper script, not the CLI
 
-**Context.** `@arethetypeswrong/cli@0.17.x` crashes with
-`Cannot read properties of undefined (reading 'filename')` on Node 24 for
-_every_ package (verified against `mitt` and other known-good packages —
-it's an attw bug, not a package bug). `publint` covers the most critical
-checks (exports map shape, type conditions, etc.) and passes cleanly.
+**Context.** The `@arethetypeswrong/cli` (every 0.17.x–0.18.x release) crashes
+with `Cannot read properties of undefined (reading 'filename')` on _any_
+package whose tarball decompresses to more than ~32 KB. Root cause: attw's
+`extractTarball` decompresses with a streaming `fflate.Gunzip` whose callback
+keeps only the **last** emitted chunk (`unzipped = chunk`). Multi-chunk
+archives are silently truncated to their final, empty flush chunk. This is an
+attw bug, not a package bug — `publint` and `tsc` both pass cleanly.
 
-**Decision.** Local `pnpm pkg:validate` runs `publint` only. A `:full`
-script also runs `attw` for engineers on Node ≤22. CI runs both, pinned to
-Node 22 LTS in the validation matrix entry, so we still catch types-wrong
-issues before publish.
+**Decision.** Skip attw's broken tarball path. `scripts/attw.mjs` enumerates
+the exact files `npm pack` would publish, hands them to
+`@arethetypeswrong/core`'s `checkPackage` as an in-memory package, and fails
+on any reported problem. `pnpm pkg:validate` runs `publint` **and** this
+script; CI runs `pkg:validate` once in the `quality` job.
 
-**Consequences.** One less local check on Node 24 boxes until attw ships a
-fix; full coverage in CI is unchanged.
+**Alternatives.** (1) Make attw non-blocking — _rejected:_ hides real
+regressions. (2) Drop attw entirely — _rejected:_ it catches dual-package
+ESM/CJS resolution hazards `publint` does not. (3) `pnpm patch` the bundled
+fflate — _rejected:_ fragile across attw upgrades.
+
+**Consequences.** One ~40-line maintained script; the real types-correctness
+analysis runs everywhere (local + CI) on every Node version, no tarball
+decompression involved.
 
 ---
 

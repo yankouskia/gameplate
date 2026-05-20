@@ -28,7 +28,7 @@ export default tseslint.config(
     languageOptions: {
       parserOptions: {
         projectService: {
-          allowDefaultProject: ['eslint.config.js'],
+          allowDefaultProject: ['eslint.config.js', 'scripts/*.mjs'],
         },
         tsconfigRootDir: import.meta.dirname,
       },
@@ -107,6 +107,23 @@ export default tseslint.config(
     rules: {
       'no-console': 'off',
       'import-x/no-default-export': 'off',
+    },
+  },
+  {
+    // Build/CI scripts: Node CLIs, so console + process.exit are expected,
+    // and third-party tool types are not resolvable via the default project.
+    files: ['scripts/**/*.mjs'],
+    languageOptions: {
+      globals: { process: 'readonly', console: 'readonly' },
+    },
+    rules: {
+      'no-console': 'off',
+      'unicorn/no-process-exit': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
     },
   },
 );

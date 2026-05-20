@@ -14,10 +14,50 @@ permissions:
   contents: read
 
 jobs:
-  verify:
-    name: ${{ matrix.os }} · node ${{ matrix.node }}
+  # Static checks + package validation. OS/Node-independent, so run once.
+  quality:
+    name: Quality (lint · types · build · package)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Format check
+        run: pnpm format:check
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Build
+        run: pnpm build
+
+      - name: Validate published package (publint + attw)
+        run: pnpm pkg:validate
+
+      - name: Size limit
+        run: pnpm size
+
+  # Behavioural tests across the support matrix. This is where OS/Node
+  # differences actually matter, so the full grid runs here.
+  test:
+    name: Test · ${{ matrix.os }} · node ${{ matrix.node }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
@@ -38,28 +78,8 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Typecheck
-        run: pnpm typecheck
-
-      - name: Lint
-        run: pnpm lint
-
       - name: Test (with coverage)
         run: pnpm test:coverage
-
-      - name: Build
-        run: pnpm build
-
-      - name: Validate published package (publint)
-        run: pnpm pkg:validate
-
-      - name: Validate types-wrong (attw, node 20/22 only)
-        if: matrix.node != '24'
-        run: npx -y @arethetypeswrong/cli --pack . --profile esm-only
-
-      - name: Size limit
-        if: matrix.node == '22' && matrix.os == 'ubuntu-latest'
-        run: pnpm size
 
       - name: Upload coverage
         if: matrix.node == '22' && matrix.os == 'ubuntu-latest'

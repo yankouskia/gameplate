@@ -15,42 +15,42 @@ library focused on developer experience and type safety.
 
 ## Current state snapshot (pre-modernization)
 
-| Aspect          | v1 (2019)                                            |
-| --------------- | ---------------------------------------------------- |
-| Language        | JavaScript ES2017, Babel-transpiled                  |
-| Module system   | CJS source (`"main": "src/index.js"`)                |
-| Node target     | unspecified (`engines` missing)                      |
-| Source files    | 6 JS files, ~80 LOC, browser-only PIXI demo         |
-| Runtime deps    | `lodash@4`, `pixi.js@4`, `redux@4`                   |
-| Dev deps        | webpack 4, ESLint 5, babel-eslint, airbnb config     |
-| Tests           | none (zero tests, zero coverage)                     |
-| Lint            | ESLint 5 + airbnb (legacy `.eslintrc` JSON)          |
-| Build           | webpack 4 bundling browser app                       |
-| CI              | none                                                 |
-| Docs            | 35-line README pointing at PIXI/redux/webpack/atom   |
-| Release         | manual `npm publish` (never executed — not on npm)   |
-| TypeScript      | not used                                             |
-| Public API      | none — the package's `main` was an executable script |
+| Aspect        | v1 (2019)                                            |
+| ------------- | ---------------------------------------------------- |
+| Language      | JavaScript ES2017, Babel-transpiled                  |
+| Module system | CJS source (`"main": "src/index.js"`)                |
+| Node target   | unspecified (`engines` missing)                      |
+| Source files  | 6 JS files, ~80 LOC, browser-only PIXI demo          |
+| Runtime deps  | `lodash@4`, `pixi.js@4`, `redux@4`                   |
+| Dev deps      | webpack 4, ESLint 5, babel-eslint, airbnb config     |
+| Tests         | none (zero tests, zero coverage)                     |
+| Lint          | ESLint 5 + airbnb (legacy `.eslintrc` JSON)          |
+| Build         | webpack 4 bundling browser app                       |
+| CI            | none                                                 |
+| Docs          | 35-line README pointing at PIXI/redux/webpack/atom   |
+| Release       | manual `npm publish` (never executed — not on npm)   |
+| TypeScript    | not used                                             |
+| Public API    | none — the package's `main` was an executable script |
 
 ## Target state (v2)
 
-| Aspect          | v2 (2026)                                                 |
-| --------------- | --------------------------------------------------------- |
-| Language        | TypeScript 5.x, `strict: true` + every strict-related flag |
-| Module system   | Dual ESM + CJS via `exports` map, ESM-first source        |
-| Node target     | `>=20.10` (Node 20 LTS, 22 LTS, 24 current)               |
-| Browser target  | last 2 evergreen, Safari last 2, iOS last 2               |
-| Source          | TypeScript, strict, zero `any`                            |
-| Runtime deps    | **zero**                                                  |
-| Dev deps        | vitest, tsup, eslint v9 flat, prettier, typedoc, ...      |
-| Tests           | Vitest, ≥90% line coverage, type-level tests              |
-| Lint            | ESLint v9 flat + typescript-eslint v8 + unicorn + n       |
-| Build           | tsup → dual ESM/CJS + d.ts + source maps + d.ts.map       |
-| CI              | matrix (Node 20/22/24 × ubuntu/macos/windows) + release   |
-| Docs            | rewritten README + generated TypeDoc site on GH Pages     |
-| Release         | Changesets + npm provenance + OIDC trusted publishing     |
-| Package mgr     | pnpm (pinned via `packageManager` + corepack)             |
-| Validation      | `publint` + `@arethetypeswrong/cli` pass clean            |
+| Aspect         | v2 (2026)                                                  |
+| -------------- | ---------------------------------------------------------- |
+| Language       | TypeScript 5.x, `strict: true` + every strict-related flag |
+| Module system  | Dual ESM + CJS via `exports` map, ESM-first source         |
+| Node target    | `>=20.10` (Node 20 LTS, 22 LTS, 24 current)                |
+| Browser target | last 2 evergreen, Safari last 2, iOS last 2                |
+| Source         | TypeScript, strict, zero `any`                             |
+| Runtime deps   | **zero**                                                   |
+| Dev deps       | vitest, tsup, eslint v9 flat, prettier, typedoc, ...       |
+| Tests          | Vitest, ≥90% line coverage, type-level tests               |
+| Lint           | ESLint v9 flat + typescript-eslint v8 + unicorn + n        |
+| Build          | tsup → dual ESM/CJS + d.ts + source maps + d.ts.map        |
+| CI             | matrix (Node 20/22/24 × ubuntu/macos/windows) + release    |
+| Docs           | rewritten README + generated TypeDoc site on GH Pages      |
+| Release        | Changesets + npm provenance + OIDC trusted publishing      |
+| Package mgr    | pnpm (pinned via `packageManager` + corepack)              |
+| Validation     | `publint` + `@arethetypeswrong/cli` pass clean             |
 
 ## Phase plan
 
@@ -69,17 +69,17 @@ library focused on developer experience and type safety.
 
 ## Risk register
 
-| Risk                                                                      | Likelihood | Mitigation                                                                                                                |
-| ------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------- |
-| **Package name conflict on npm**                                          | Low        | `gameplate` is *not* currently published (verified via `npm view`). Name is free. First publish will claim it.            |
-| **Breaking change for v1 consumers**                                      | None       | v1 had no public API — it was a boilerplate to clone, not a library to import. There are no installed-from-npm consumers. |
-| **`@arethetypeswrong/cli` flagging dual-publish issues**                  | Medium     | Build with `tsup` which generates spec-correct exports; validate in CI on every PR.                                       |
-| **Game loop timing tests being flaky on CI**                              | Medium     | Use a fake-clock abstraction; never depend on real `requestAnimationFrame` in tests.                                      |
-| **Browser-only globals (`window`, `document`) breaking Node consumers**   | High       | Lazy DOM access; all DOM-touching modules guard with `typeof window !== 'undefined'`; export a `createHeadlessGame` path. |
-| **`unhandledrejection` listeners leaking between tests**                  | Medium     | Each test gets a fresh game instance; teardown helpers in test setup.                                                     |
-| **Action argument inference regressing under future TS versions**         | Low        | Pin TS in CI matrix; add `expectTypeOf` type-level tests that fail loudly on inference breakage.                          |
-| **Old git history contains commits under `aleksandr.yankovskiy@gmail.com`** | None     | Author identity stays consistent (same person, current email); no history rewrite needed.                                 |
-| **No published baseline for performance regression detection**            | Accepted   | Establish baseline with first release; benchmark suite runs but doesn't gate CI until a baseline exists.                  |
+| Risk                                                                        | Likelihood | Mitigation                                                                                                                |
+| --------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Package name conflict on npm**                                            | Low        | `gameplate` is _not_ currently published (verified via `npm view`). Name is free. First publish will claim it.            |
+| **Breaking change for v1 consumers**                                        | None       | v1 had no public API — it was a boilerplate to clone, not a library to import. There are no installed-from-npm consumers. |
+| **`@arethetypeswrong/cli` flagging dual-publish issues**                    | Medium     | Build with `tsup` which generates spec-correct exports; validate in CI on every PR.                                       |
+| **Game loop timing tests being flaky on CI**                                | Medium     | Use a fake-clock abstraction; never depend on real `requestAnimationFrame` in tests.                                      |
+| **Browser-only globals (`window`, `document`) breaking Node consumers**     | High       | Lazy DOM access; all DOM-touching modules guard with `typeof window !== 'undefined'`; export a `createHeadlessGame` path. |
+| **`unhandledrejection` listeners leaking between tests**                    | Medium     | Each test gets a fresh game instance; teardown helpers in test setup.                                                     |
+| **Action argument inference regressing under future TS versions**           | Low        | Pin TS in CI matrix; add `expectTypeOf` type-level tests that fail loudly on inference breakage.                          |
+| **Old git history contains commits under `aleksandr.yankovskiy@gmail.com`** | None       | Author identity stays consistent (same person, current email); no history rewrite needed.                                 |
+| **No published baseline for performance regression detection**              | Accepted   | Establish baseline with first release; benchmark suite runs but doesn't gate CI until a baseline exists.                  |
 
 ## Public API surface (target)
 
