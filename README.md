@@ -9,6 +9,7 @@
 State. Loop. Input. Scenes. Selectors. Ship a game today.
 
 [![npm](https://img.shields.io/npm/v/gameplate?color=%23a78bfa&label=npm&style=for-the-badge)](https://www.npmjs.com/package/gameplate)
+[![CI](https://img.shields.io/github/actions/workflow/status/yankouskia/gameplate/ci.yml?branch=master&label=CI&color=%232ea043&style=for-the-badge)](https://github.com/yankouskia/gameplate/actions/workflows/ci.yml)
 [![gzip](https://img.shields.io/bundlephobia/minzip/gameplate?label=gzip&color=%23ff5277&style=for-the-badge)](https://bundlephobia.com/package/gameplate)
 [![types](https://img.shields.io/npm/types/gameplate?color=%233178c6&style=for-the-badge)](https://yankouskia.github.io/gameplate/)
 [![license](https://img.shields.io/npm/l/gameplate?color=%23f8b400&style=for-the-badge)](./LICENSE)
