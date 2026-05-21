@@ -14,6 +14,10 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
 
+    // TS 6.0 flags `baseUrl` (injected by the tsup/rollup-plugin-dts dts
+    // pipeline) as a deprecation error; acknowledge the 6.0 → 7.0 removal.
+    "ignoreDeprecations": "6.0",
+
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,

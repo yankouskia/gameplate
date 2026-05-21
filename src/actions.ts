@@ -82,5 +82,8 @@ export type Dispatch<A> = {
  * ```
  */
 export function defineActions<S>(): <A extends ActionMap<S>>(actions: A) => A {
-  return (actions) => actions;
+  return identity;
 }
+
+/** Identity function — the curried second call of {@link defineActions} just hands back its argument. */
+const identity = <T>(value: T): T => value;
