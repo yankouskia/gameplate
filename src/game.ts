@@ -4,6 +4,7 @@ import { createLoop, type Loop, type LoopConfig, type Scheduler } from './loop.j
 import { createStore, type Store } from './store.js';
 
 import type { ActionMap, Dispatch } from './actions.js';
+import type { ActionTap } from './recorder.js';
 import type { DeepReadonly, Listener, Unsubscribe } from './types.js';
 
 /**
@@ -41,6 +42,17 @@ export interface GameConfig<S, A extends ActionMap<S>> {
   dev?: boolean;
   /** Custom scheduler (tests, headless Node loop, etc.). */
   scheduler?: Scheduler;
+  /**
+   * Fires synchronously after every dispatched action's `setState` succeeds,
+   * with the action name and its arguments. Hook a
+   * {@link createRecorder | recorder}, logger, or analytics sink here.
+   *
+   * Firing *after* setState (rather than before) is deliberate: it keeps the
+   * recorded event order identical to the apply order even when the tap
+   * itself dispatches further actions, and skips events for actions that
+   * threw — so recordings remain deterministically replayable.
+   */
+  tap?: ActionTap;
 }
 
 /**
@@ -110,6 +122,7 @@ export function createGame<S, A extends ActionMap<S>>(config: GameConfig<S, A>):
 
   // Build dispatchers eagerly so identities are stable.
   const dispatch = Object.create(null) as Dispatch<A>;
+  const tap = config.tap;
   for (const key of Object.keys(config.actions)) {
     const action = config.actions[key];
     if (action === undefined) continue;
@@ -117,6 +130,7 @@ export function createGame<S, A extends ActionMap<S>>(config: GameConfig<S, A>):
       enumerable: true,
       value: (...args: readonly never[]): void => {
         store.setState((current) => action(current, ...args));
+        tap?.(key, args);
       },
     });
   }

@@ -54,6 +54,7 @@ game.start();
 - 🎮 **Input, normalized.** Keyboard + pointer with target-relative coords. Headless no-ops cleanly — same API on Node.
 - 🎬 **Typed scene FSM.** `menu → start → playing` with compile-time checks. Send a wrong event? TypeScript stops you.
 - 🧠 **Memoized selectors.** Reselect-style derived state, ~30 LOC, exact same shape.
+- 🎞️ **Record & replay.** Capture every dispatched action; replay it deterministically. Bug repro, regression tests, server-authoritative validation — all in JSON.
 - 🖥️ **Browser & Node.** Headless simulation, server-authoritative play, CI snapshot tests — same code, two runtimes.
 - 📦 **Dual ESM + CJS.** `publint` clean. Provenance signed. Tree-shakeable.
 
@@ -93,6 +94,7 @@ That's state + actions. Add `update` for input handling, `render` for drawing, a
 | **`createKeyboard`** / **`createPointer`** | Normalized input. No-op stubs on the server.                          |
 | **`createMachine`**                        | Compile-time-checked finite state machine for scenes/menus.           |
 | **`createSelector`**                       | Reselect-style memoization, ~30 LOC.                                  |
+| **`createRecorder`** / **`replay`**        | Deterministic record + replay of every action. JSON-serialisable.     |
 
 [**→ Full API reference**](https://yankouskia.github.io/gameplate/api/)
 
@@ -124,13 +126,13 @@ Switch renderers without changing one line of game logic. [Patterns for each →
          loop (dt, alpha) ──▶ update ──▶ actions
 ```
 
-Five composable functions. Pick the ones you need. Ignore the rest.
+A handful of composable functions. Pick the ones you need. Ignore the rest.
 
 ---
 
 ## Quality bar
 
-- ✅ 71/71 tests, ≥ 90 % line coverage
+- ✅ 116/116 tests, ≥ 90 % line coverage
 - ✅ CI matrix: Node 20 / 22 / 24 × Ubuntu / macOS / Windows
 - ✅ `publint` + `@arethetypeswrong/cli` clean on every PR
 - ✅ Size limit: < 4 KB gzipped ESM, enforced in CI

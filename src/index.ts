@@ -45,5 +45,20 @@ export { createMachine, type Machine, type MachineConfig, type Transitions } fro
 // Selectors
 export { createSelector, type Selector } from './selectors.js';
 
+// Recorder & replay (deterministic record + replay of action sequences)
+export {
+  composeTaps,
+  createRecorder,
+  RECORDING_VERSION,
+  replay,
+  truncateRecording,
+  type ActionTap,
+  type RecordedEvent,
+  type Recorder,
+  type RecorderOptions,
+  type Recording,
+  type ReplayOptions,
+} from './recorder.js';
+
 // Shared types
 export type { DeepReadonly, Listener, Unsubscribe } from './types.js';

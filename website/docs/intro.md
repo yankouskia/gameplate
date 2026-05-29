@@ -30,7 +30,7 @@ That's the API. Read it, write it, ship it.
 
 ## What you get
 
-Five composable primitives. Pick what you need, ignore the rest.
+A handful of composable primitives. Pick what you need, ignore the rest.
 
 ```mermaid
 flowchart LR
@@ -75,5 +75,6 @@ Or browse the guides:
 - 🎮 [Input](./guides/input.md) — keyboard + pointer, normalized
 - 🎬 [Scenes (FSM)](./guides/scenes.md) — menus, modes, game-over
 - 🧠 [Selectors](./guides/selectors.md) — memoized derived state
+- 🎞️ [Recording & Replay](./guides/recording.md) — deterministic record + replay of every action
 - 🖥️ [Headless / Node](./guides/headless.md) — same game, no DOM
 - 🚀 [WebGL & GPU](./guides/webgl.md) — Three, PIXI v8, WebGPU patterns

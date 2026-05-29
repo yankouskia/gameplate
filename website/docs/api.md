@@ -59,6 +59,19 @@ import {
   createSelector,
   type Selector,
 
+  // 🎞️ Record & replay
+  createRecorder,
+  replay,
+  composeTaps,
+  truncateRecording,
+  RECORDING_VERSION,
+  type ActionTap,
+  type RecordedEvent,
+  type Recorder,
+  type RecorderOptions,
+  type Recording,
+  type ReplayOptions,
+
   // 🧰 Utility types
   type DeepReadonly,
   type Listener,

@@ -1,7 +1,7 @@
 ---
 id: headless
 title: Headless / Node
-sidebar_position: 6
+sidebar_position: 7
 ---
 
 # Headless games 🖥️
@@ -12,7 +12,8 @@ keyboard. Perfect for:
 - **Server-authoritative multiplayer.** Run the simulation on Node, ship state to clients.
 - **CI tests.** Drive 5,000 ticks of the game in a Vitest run; assert outcomes.
 - **Web Workers.** Move heavy simulation off the main thread.
-- **Replay systems.** Re-run a recorded input stream with a deterministic loop.
+- **Replay systems.** Re-run a recorded input stream with a deterministic
+  loop — see [Recording & Replay](./recording.md) for the built-in primitives.
 
 ## How `gameplate` stays headless-safe
 

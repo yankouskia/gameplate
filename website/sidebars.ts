@@ -23,6 +23,7 @@ const sidebars: SidebarsConfig = {
         'guides/input',
         'guides/scenes',
         'guides/selectors',
+        'guides/recording',
         'guides/headless',
         'guides/webgl',
       ],
