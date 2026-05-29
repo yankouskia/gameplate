@@ -38,6 +38,17 @@ export {
 // Input
 export { createKeyboard, type Keyboard } from './input/keyboard.js';
 export { createPointer, type Pointer, type PointerState } from './input/pointer.js';
+export {
+  createGamepad,
+  STANDARD_AXES,
+  STANDARD_BUTTONS,
+  type Gamepad,
+  type GamepadOptions,
+  type GamepadState,
+  type NativeGamepad,
+  type StandardAxis,
+  type StandardButton,
+} from './input/gamepad.js';
 
 // Scenes (FSM)
 export { createMachine, type Machine, type MachineConfig, type Transitions } from './scenes.js';

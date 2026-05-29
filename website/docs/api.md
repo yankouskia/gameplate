@@ -45,9 +45,16 @@ import {
   // 🎮 Input
   createKeyboard,
   createPointer,
+  createGamepad,
   type Keyboard,
   type Pointer,
   type PointerState,
+  type Gamepad,
+  type GamepadOptions,
+  type GamepadState,
+  type NativeGamepad,
+  type StandardAxis,
+  type StandardButton,
 
   // 🎬 Scenes (typed FSM)
   createMachine,

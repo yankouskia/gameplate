@@ -1,3 +1,9 @@
+import {
+  createGamepad,
+  type Gamepad,
+  type GamepadOptions,
+  type NativeGamepad,
+} from './input/gamepad.js';
 import { createKeyboard, type Keyboard } from './input/keyboard.js';
 import { createPointer, type Pointer } from './input/pointer.js';
 import { createLoop, type Loop, type LoopConfig, type Scheduler } from './loop.js';
@@ -38,6 +44,13 @@ export interface GameConfig<S, A extends ActionMap<S>> {
   keyboard?: boolean | { target?: EventTarget; preventDefault?: boolean };
   /** Whether to instantiate a {@link Pointer}. Defaults `true` in browsers. */
   pointer?: boolean | { target?: EventTarget };
+  /**
+   * Whether to instantiate a {@link Gamepad}. Defaults `true` in browsers.
+   * When enabled, the gamepad is polled automatically at the start of every
+   * `update` tick — `game.gamepad.isDown('A')` inside your update hook reads
+   * fresh state from the platform.
+   */
+  gamepad?: boolean | GamepadOptions;
   /** When `true`, every state value is `Object.freeze`d. Use in dev only. */
   dev?: boolean;
   /** Custom scheduler (tests, headless Node loop, etc.). */
@@ -77,6 +90,8 @@ export interface Game<S, A extends ActionMap<S>> {
   readonly keyboard: Keyboard;
   /** The {@link Pointer}, if enabled. Always defined; no-op in non-browsers. */
   readonly pointer: Pointer;
+  /** The {@link Gamepad}, if enabled. Always defined; no-op in non-browsers. */
+  readonly gamepad: Gamepad;
   /** Underlying {@link Store} — for advanced composition. */
   readonly store: Store<S>;
   /** Underlying {@link Loop} — for advanced composition. */
@@ -146,9 +161,17 @@ export function createGame<S, A extends ActionMap<S>>(config: GameConfig<S, A>):
     if (typeof config.pointer === 'object') return createPointer(config.pointer);
     return createPointer();
   })();
+  const gamepad = (() => {
+    if (config.gamepad === false) return createGamepad({ getGamepads: emptyGetGamepads });
+    if (typeof config.gamepad === 'object') return createGamepad(config.gamepad);
+    return createGamepad();
+  })();
 
   const loopConfig: LoopConfig = {
-    update: (dt) => config.update?.(store.getState(), dt, dispatch),
+    update: (dt) => {
+      gamepad.poll();
+      config.update?.(store.getState(), dt, dispatch);
+    },
     render: (alpha) => config.render?.(store.getState(), alpha),
   };
   if (config.fixedStep !== undefined) loopConfig.fixedStep = config.fixedStep;
@@ -173,6 +196,7 @@ export function createGame<S, A extends ActionMap<S>>(config: GameConfig<S, A>):
     isRunning: loop.isRunning,
     keyboard,
     pointer,
+    gamepad,
     store,
     loop,
     destroy() {
@@ -181,6 +205,7 @@ export function createGame<S, A extends ActionMap<S>>(config: GameConfig<S, A>):
       loop.stop();
       keyboard.destroy();
       pointer.destroy();
+      gamepad.destroy();
     },
   };
 }
@@ -188,4 +213,9 @@ export function createGame<S, A extends ActionMap<S>>(config: GameConfig<S, A>):
 /** Tiny in-memory event-target stub so input no-ops cleanly when disabled. */
 function emptyTarget(): EventTarget {
   return new EventTarget();
+}
+
+/** Empty-gamepad source for the `gamepad: false` branch — pure headless no-op. */
+function emptyGetGamepads(): readonly (NativeGamepad | null)[] {
+  return [];
 }

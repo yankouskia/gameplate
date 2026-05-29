@@ -61,6 +61,7 @@ implementation and the rest keeps working.
 - 🎯 **Renderer-agnostic.** Bring Canvas, WebGL, WebGPU, PIXI, Three.js — anything.
 - ⏱️ **Deterministic loop.** Variable or fixed-step with interpolation.
 - 🎮 **Headless-ready.** Same code runs in the browser AND in Node.
+- 🎞️ **Record & replay.** Capture every action; replay deterministically.
 
 ## Get started in 60 seconds
 
@@ -72,7 +73,7 @@ Or browse the guides:
 
 - 🗂️ [State & Actions](./guides/state-and-actions.md) — the typing magic behind `defineActions`
 - ⏱️ [Game Loop](./guides/loop.md) — when to use fixed-step
-- 🎮 [Input](./guides/input.md) — keyboard + pointer, normalized
+- 🎮 [Input](./guides/input.md) — keyboard + pointer + gamepad, normalized
 - 🎬 [Scenes (FSM)](./guides/scenes.md) — menus, modes, game-over
 - 🧠 [Selectors](./guides/selectors.md) — memoized derived state
 - 🎞️ [Recording & Replay](./guides/recording.md) — deterministic record + replay of every action

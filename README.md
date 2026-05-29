@@ -51,7 +51,7 @@ game.start();
 - 🦺 **TypeScript-first.** `strict: true` + every `noUnchecked*` flag. Inference does the work — no `as any`, ever.
 - 🎯 **Renderer-agnostic.** Canvas · WebGL · WebGPU · PIXI · Three.js · DOM · terminal. Pick one. Switch tomorrow.
 - ⏱️ **Deterministic loop.** Variable timestep by default; opt into fixed-step + interpolation when physics need to be reproducible.
-- 🎮 **Input, normalized.** Keyboard + pointer with target-relative coords. Headless no-ops cleanly — same API on Node.
+- 🎮 **Input, normalized.** Keyboard + pointer + **gamepad** (with radial-deadzoned sticks and edge detection). Headless no-ops cleanly — same API on Node.
 - 🎬 **Typed scene FSM.** `menu → start → playing` with compile-time checks. Send a wrong event? TypeScript stops you.
 - 🧠 **Memoized selectors.** Reselect-style derived state, ~30 LOC, exact same shape.
 - 🎞️ **Record & replay.** Capture every dispatched action; replay it deterministically. Bug repro, regression tests, server-authoritative validation — all in JSON.
@@ -85,16 +85,16 @@ That's state + actions. Add `update` for input handling, `render` for drawing, a
 
 ## What's in the box
 
-|                                            |                                                                       |
-| :----------------------------------------- | :-------------------------------------------------------------------- |
-| **`createGame`**                           | One-call setup — state + loop + input wired together.                 |
-| **`createStore`**                          | The underlying typed store (subscribe, getState, setState).           |
-| **`defineActions`**                        | Curried generic that gives perfect IntelliSense without retyping `S`. |
-| **`createLoop`**                           | Bare loop — variable or fixed-step with interpolation `alpha`.        |
-| **`createKeyboard`** / **`createPointer`** | Normalized input. No-op stubs on the server.                          |
-| **`createMachine`**                        | Compile-time-checked finite state machine for scenes/menus.           |
-| **`createSelector`**                       | Reselect-style memoization, ~30 LOC.                                  |
-| **`createRecorder`** / **`replay`**        | Deterministic record + replay of every action. JSON-serialisable.     |
+|                                                                  |                                                                                                        |
+| :--------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------- |
+| **`createGame`**                                                 | One-call setup — state + loop + input wired together.                                                  |
+| **`createStore`**                                                | The underlying typed store (subscribe, getState, setState).                                            |
+| **`defineActions`**                                              | Curried generic that gives perfect IntelliSense without retyping `S`.                                  |
+| **`createLoop`**                                                 | Bare loop — variable or fixed-step with interpolation `alpha`.                                         |
+| **`createKeyboard`** / **`createPointer`** / **`createGamepad`** | Normalized input — keys, pointer, and Standard Gamepad with edge detection. No-op stubs on the server. |
+| **`createMachine`**                                              | Compile-time-checked finite state machine for scenes/menus.                                            |
+| **`createSelector`**                                             | Reselect-style memoization, ~30 LOC.                                                                   |
+| **`createRecorder`** / **`replay`**                              | Deterministic record + replay of every action. JSON-serialisable.                                      |
 
 [**→ Full API reference**](https://yankouskia.github.io/gameplate/api/)
 
@@ -132,7 +132,7 @@ A handful of composable functions. Pick the ones you need. Ignore the rest.
 
 ## Quality bar
 
-- ✅ 116/116 tests, ≥ 90 % line coverage
+- ✅ 141/141 tests, ≥ 90 % line coverage
 - ✅ CI matrix: Node 20 / 22 / 24 × Ubuntu / macOS / Windows
 - ✅ `publint` + `@arethetypeswrong/cli` clean on every PR
 - ✅ Size limit: < 4 KB gzipped ESM, enforced in CI

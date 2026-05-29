@@ -182,6 +182,88 @@ describe('createGame', () => {
     game.destroy();
   });
 
+  it('gamepad:false produces an empty, never-throwing reader', () => {
+    const game = createGame({
+      state: { x: 0, y: 0, score: 0 },
+      actions,
+      scheduler,
+      keyboard: false,
+      pointer: false,
+      gamepad: false,
+    });
+    expect(game.gamepad.isDown('A')).toBe(false);
+    expect(game.gamepad.connected()).toBe(false);
+    expect(game.gamepad.stick('left')).toEqual({ x: 0, y: 0 });
+    game.destroy();
+  });
+
+  it('gamepad option object configures getGamepads', () => {
+    const pads = [
+      {
+        id: 'fake',
+        index: 0,
+        connected: true,
+        buttons: [{ pressed: true, value: 1 }],
+        axes: [],
+      },
+    ];
+    const game = createGame({
+      state: { x: 0, y: 0, score: 0 },
+      actions,
+      scheduler,
+      keyboard: false,
+      pointer: false,
+      gamepad: { getGamepads: () => pads },
+    });
+    game.gamepad.poll();
+    expect(game.gamepad.isDown('A')).toBe(true);
+    game.destroy();
+  });
+
+  it('createGame polls gamepad before every update tick', () => {
+    let frame = 0;
+    const snapshots = [
+      [
+        {
+          id: 'p',
+          index: 0,
+          connected: true,
+          buttons: [{ pressed: false, value: 0 }],
+          axes: [],
+        },
+      ],
+      [
+        {
+          id: 'p',
+          index: 0,
+          connected: true,
+          buttons: [{ pressed: true, value: 1 }],
+          axes: [],
+        },
+      ],
+    ];
+    const observed: boolean[] = [];
+    const game = createGame({
+      state: { x: 0, y: 0, score: 0 },
+      actions,
+      scheduler,
+      keyboard: false,
+      pointer: false,
+      gamepad: {
+        getGamepads: () => snapshots[frame] ?? [],
+      },
+      update: () => {
+        observed.push(game.gamepad.isDown('A'));
+        frame += 1;
+      },
+    });
+    game.start();
+    scheduler.tick(0);
+    scheduler.tick(16);
+    expect(observed).toEqual([false, true]);
+    game.destroy();
+  });
+
   it('keyboard option object configures the underlying target', () => {
     const target = new EventTarget();
     const game = createGame({

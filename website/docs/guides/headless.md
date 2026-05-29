@@ -19,8 +19,9 @@ keyboard. Perfect for:
 
 Three design choices make it work:
 
-1. **Input is no-op on the server.** `createKeyboard()` and `createPointer()` return stubs in
-   any environment without `addEventListener` — same API, false/0/never-fires.
+1. **Input is no-op on the server.** `createKeyboard()`, `createPointer()`, and
+   `createGamepad()` return stubs in any environment without the matching
+   platform API — same shape, `false` / `0` / never-fires across the board.
 2. **The loop is environment-aware.** `defaultScheduler()` picks
    `requestAnimationFrame` in browsers and `setTimeout`-based scheduling in Node.
 3. **State + actions don't touch the DOM.** That's just on you to keep that way.
