@@ -126,6 +126,11 @@
       "limit": "5 kB"
     }
   ],
+  "pnpm": {
+    "overrides": {
+      "esbuild@<0.28.1": ">=0.28.1"
+    }
+  },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged"
   },
