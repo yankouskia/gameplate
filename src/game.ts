@@ -7,7 +7,9 @@ import {
 import { createKeyboard, type Keyboard } from './input/keyboard.js';
 import { createPointer, type Pointer } from './input/pointer.js';
 import { createLoop, type Loop, type LoopConfig, type Scheduler } from './loop.js';
+import { createRandom, type Random } from './random.js';
 import { createStore, type Store } from './store.js';
+import { createTimers, type Timers } from './timers.js';
 
 import type { ActionMap, Dispatch } from './actions.js';
 import type { ActionTap } from './recorder.js';
@@ -56,6 +58,18 @@ export interface GameConfig<S, A extends ActionMap<S>> {
   /** Custom scheduler (tests, headless Node loop, etc.). */
   scheduler?: Scheduler;
   /**
+   * Seed for `game.random`, the built-in {@link createRandom | seeded RNG}.
+   * Pass a value for reproducible runs; omit for an auto-seeded generator
+   * (read `game.random.seed` to recover it).
+   */
+  seed?: number | string;
+  /**
+   * Whether to instantiate `game.timers` and auto-advance it at the top of
+   * every `update` tick. Default `true`. Set `false` to opt out of the
+   * per-tick advance (the pool is still created so `game.timers` is defined).
+   */
+  timers?: boolean;
+  /**
    * Fires synchronously after every dispatched action's `setState` succeeds,
    * with the action name and its arguments. Hook a
    * {@link createRecorder | recorder}, logger, or analytics sink here.
@@ -92,6 +106,10 @@ export interface Game<S, A extends ActionMap<S>> {
   readonly pointer: Pointer;
   /** The {@link Gamepad}, if enabled. Always defined; no-op in non-browsers. */
   readonly gamepad: Gamepad;
+  /** Seeded deterministic RNG. Reproducible when `seed` is set; read `.seed` to recover an auto seed. */
+  readonly random: Random;
+  /** Game-time timers, auto-advanced each `update` tick unless `timers: false`. */
+  readonly timers: Timers;
   /** Underlying {@link Store} — for advanced composition. */
   readonly store: Store<S>;
   /** Underlying {@link Loop} — for advanced composition. */
@@ -167,9 +185,14 @@ export function createGame<S, A extends ActionMap<S>>(config: GameConfig<S, A>):
     return createGamepad();
   })();
 
+  const random = createRandom(config.seed);
+  const timers = createTimers();
+  const autoAdvanceTimers = config.timers !== false;
+
   const loopConfig: LoopConfig = {
     update: (dt) => {
       gamepad.poll();
+      if (autoAdvanceTimers) timers.advance(dt);
       config.update?.(store.getState(), dt, dispatch);
     },
     render: (alpha) => config.render?.(store.getState(), alpha),
@@ -197,6 +220,8 @@ export function createGame<S, A extends ActionMap<S>>(config: GameConfig<S, A>):
     keyboard,
     pointer,
     gamepad,
+    random,
+    timers,
     store,
     loop,
     destroy() {
@@ -206,6 +231,7 @@ export function createGame<S, A extends ActionMap<S>>(config: GameConfig<S, A>):
       keyboard.destroy();
       pointer.destroy();
       gamepad.destroy();
+      timers.cancelAll();
     },
   };
 }

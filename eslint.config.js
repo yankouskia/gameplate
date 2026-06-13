@@ -69,6 +69,9 @@ export default tseslint.config(
       'unicorn/prefer-export-from': ['error', { checkUsedVariables: false }],
       'unicorn/no-array-callback-reference': 'off',
       'unicorn/explicit-length-check': 'off',
+      // Prettier owns number-literal formatting (it lowercases hex); this rule
+      // wants uppercase digits, so the two fight on every format pass.
+      'unicorn/number-literal-case': 'off',
 
       // Imports
       'import-x/order': [

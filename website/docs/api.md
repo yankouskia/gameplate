@@ -66,6 +66,16 @@ import {
   createSelector,
   type Selector,
 
+  // 🎲 Random (seeded PRNG)
+  createRandom,
+  type Random,
+  type RandomState,
+
+  // ⏲️ Timers (game-time scheduling)
+  createTimers,
+  type Timers,
+  type TimerHandle,
+
   // 🎞️ Record & replay
   createRecorder,
   replay,
@@ -98,7 +108,7 @@ Every symbol is documented with:
 
 |                           |                                                                  |
 | :------------------------ | :--------------------------------------------------------------- |
-| **Bundle size (gzipped)** | ~3 KB (target: &lt; 4 KB hard cap in CI)                         |
+| **Bundle size (gzipped)** | ~4 KB full barrel (target: &lt; 5 KB hard cap in CI); tree-shakeable |
 | **Tree-shaking**          | `sideEffects: false` — only imported symbols land in your bundle |
 | **Runtime dependencies**  | **None.**                                                        |
 | **Modules**               | Dual ESM + CJS; `exports` map drives resolution                  |

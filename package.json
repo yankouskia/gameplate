@@ -117,13 +117,13 @@
     {
       "name": "core (esm)",
       "path": "dist/index.js",
-      "limit": "4 kB",
+      "limit": "5 kB",
       "import": "*"
     },
     {
       "name": "core (cjs)",
       "path": "dist/index.cjs",
-      "limit": "5 kB"
+      "limit": "6 kB"
     }
   ],
   "pnpm": {

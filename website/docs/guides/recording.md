@@ -1,7 +1,7 @@
 ---
 id: recording
 title: Recording & Replay
-sidebar_position: 6
+sidebar_position: 8
 ---
 
 # Recording & Replay 🎬

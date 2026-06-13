@@ -1,7 +1,7 @@
 ---
 id: webgl
 title: WebGL & GPU stack
-sidebar_position: 8
+sidebar_position: 10
 ---
 
 # WebGL, WebGPU & the GPU stack 🚀

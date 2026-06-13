@@ -7,7 +7,7 @@ slug: /intro
 
 # What is `gameplate`?
 
-> The **3 KB TypeScript game framework**. Zero deps. Any renderer.
+> The **tiny TypeScript game framework**. Zero deps. Any renderer.
 
 ```ts
 import { createGame, defineActions } from 'gameplate';
@@ -56,10 +56,11 @@ implementation and the rest keeps working.
 
 ## Why people use it
 
-- 🪶 **3 KB gzipped.** Smaller than a single sprite sheet.
+- 🪶 **~4 KB gzipped, tree-shakeable.** Import only what you use; zero runtime deps.
 - 🦺 **TypeScript-first.** Strict mode, perfect inference, no `as any`.
 - 🎯 **Renderer-agnostic.** Bring Canvas, WebGL, WebGPU, PIXI, Three.js — anything.
 - ⏱️ **Deterministic loop.** Variable or fixed-step with interpolation.
+- 🎲 **Seeded RNG + game-time timers.** Reproducible randomness; `after`/`every` that respect pause.
 - 🎮 **Headless-ready.** Same code runs in the browser AND in Node.
 - 🎞️ **Record & replay.** Capture every action; replay deterministically.
 
@@ -76,6 +77,8 @@ Or browse the guides:
 - 🎮 [Input](./guides/input.md) — keyboard + pointer + gamepad, normalized
 - 🎬 [Scenes (FSM)](./guides/scenes.md) — menus, modes, game-over
 - 🧠 [Selectors](./guides/selectors.md) — memoized derived state
+- 🎲 [Random](./guides/random.md) — seeded, reproducible, serializable RNG
+- ⏲️ [Timers](./guides/timers.md) — game-time `after` / `every` scheduling
 - 🎞️ [Recording & Replay](./guides/recording.md) — deterministic record + replay of every action
 - 🖥️ [Headless / Node](./guides/headless.md) — same game, no DOM
 - 🚀 [WebGL & GPU](./guides/webgl.md) — Three, PIXI v8, WebGPU patterns

@@ -278,4 +278,138 @@ describe('createGame', () => {
     expect(game.keyboard.isDown('a')).toBe(true);
     game.destroy();
   });
+
+  it('game.random is seeded by config.seed and is deterministic', () => {
+    const a = createGame({
+      state: { x: 0, y: 0, score: 0 },
+      actions,
+      scheduler: fakeScheduler(),
+      keyboard: false,
+      pointer: false,
+      seed: 'level-1',
+    });
+    const b = createGame({
+      state: { x: 0, y: 0, score: 0 },
+      actions,
+      scheduler: fakeScheduler(),
+      keyboard: false,
+      pointer: false,
+      seed: 'level-1',
+    });
+    expect(a.random.seed).toBe('level-1');
+    expect(Array.from({ length: 5 }, () => a.random.next())).toEqual(
+      Array.from({ length: 5 }, () => b.random.next()),
+    );
+  });
+
+  it('game.random auto-seeds when no seed is given (seed recoverable)', () => {
+    const game = createGame({
+      state: { x: 0, y: 0, score: 0 },
+      actions,
+      scheduler,
+      keyboard: false,
+      pointer: false,
+    });
+    expect(typeof game.random.seed).toBe('number');
+  });
+
+  it('game.timers auto-advances on each update tick', () => {
+    const fn = vi.fn();
+    const game = createGame({
+      state: { x: 0, y: 0, score: 0 },
+      actions,
+      scheduler,
+      keyboard: false,
+      pointer: false,
+    });
+    game.timers.after(0.02, fn);
+    game.start();
+    scheduler.tick(0);
+    scheduler.tick(16); // ~0.016s
+    expect(fn).not.toHaveBeenCalled();
+    scheduler.tick(16); // ~0.032s total → fires
+    expect(fn).toHaveBeenCalledTimes(1);
+    game.destroy();
+  });
+
+  it('timers auto-advance with fixedStep set (on the variable frame dt)', () => {
+    const fn = vi.fn();
+    const game = createGame({
+      state: { x: 0, y: 0, score: 0 },
+      actions,
+      scheduler,
+      keyboard: false,
+      pointer: false,
+      fixedStep: 1 / 120,
+      fixedUpdate: () => {
+        /* physics */
+      },
+      update: () => {
+        /* timers advance here regardless */
+      },
+    });
+    game.timers.after(0.02, fn);
+    game.start();
+    scheduler.tick(0);
+    scheduler.tick(16); // ~0.016s
+    expect(fn).not.toHaveBeenCalled();
+    scheduler.tick(16); // ~0.032s total → fires
+    expect(fn).toHaveBeenCalledTimes(1);
+    game.destroy();
+  });
+
+  it('timers auto-advance even with no update hook', () => {
+    const fn = vi.fn();
+    const game = createGame({
+      state: { x: 0, y: 0, score: 0 },
+      actions,
+      scheduler,
+      keyboard: false,
+      pointer: false,
+      // no update hook at all
+    });
+    game.timers.after(0.02, fn);
+    game.start();
+    scheduler.tick(0);
+    scheduler.tick(16);
+    scheduler.tick(16);
+    expect(fn).toHaveBeenCalledTimes(1);
+    game.destroy();
+  });
+
+  it('timers: false stops the auto-advance but keeps game.timers usable', () => {
+    const fn = vi.fn();
+    const game = createGame({
+      state: { x: 0, y: 0, score: 0 },
+      actions,
+      scheduler,
+      keyboard: false,
+      pointer: false,
+      timers: false,
+    });
+    game.timers.after(0.01, fn);
+    game.start();
+    scheduler.tick(0);
+    scheduler.tick(16);
+    scheduler.tick(16);
+    expect(fn).not.toHaveBeenCalled(); // never auto-advanced
+    game.timers.advance(1); // manual advance still works
+    expect(fn).toHaveBeenCalledTimes(1);
+    game.destroy();
+  });
+
+  it('destroy cancels pending timers', () => {
+    const fn = vi.fn();
+    const game = createGame({
+      state: { x: 0, y: 0, score: 0 },
+      actions,
+      scheduler,
+      keyboard: false,
+      pointer: false,
+    });
+    game.timers.after(0.02, fn);
+    game.start();
+    game.destroy();
+    expect(game.timers.count()).toBe(0);
+  });
 });

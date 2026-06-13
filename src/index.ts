@@ -56,6 +56,12 @@ export { createMachine, type Machine, type MachineConfig, type Transitions } fro
 // Selectors
 export { createSelector, type Selector } from './selectors.js';
 
+// Random (seeded deterministic PRNG)
+export { createRandom, type Random, type RandomState } from './random.js';
+
+// Timers (game-time scheduling)
+export { createTimers, type Timers, type TimerHandle } from './timers.js';
+
 // Recorder & replay (deterministic record + replay of action sequences)
 export {
   composeTaps,

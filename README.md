@@ -4,9 +4,9 @@
 
 # `gameplate`
 
-### **The 3 KB TypeScript game framework. Zero deps. Any renderer.**
+### **The tiny TypeScript game framework. Zero deps. Any renderer.**
 
-State. Loop. Input. Scenes. Selectors. Ship a game today.
+State. Loop. Input. Scenes. Selectors. Seeded RNG. Timers. Ship a game today.
 
 [![npm](https://img.shields.io/npm/v/gameplate?color=%23a78bfa&label=npm&style=for-the-badge)](https://www.npmjs.com/package/gameplate)
 [![CI](https://img.shields.io/github/actions/workflow/status/yankouskia/gameplate/ci.yml?branch=master&label=CI&color=%232ea043&style=for-the-badge)](https://github.com/yankouskia/gameplate/actions/workflows/ci.yml)
@@ -47,13 +47,15 @@ game.start();
 
 ## Why you'll like it
 
-- 🪶 **3 KB gzipped.** Smaller than a single sprite sheet. Zero runtime deps. Forever.
+- 🪶 **~4 KB gzipped, fully tree-shakeable.** Import only the primitives you use; zero runtime deps, forever.
 - 🦺 **TypeScript-first.** `strict: true` + every `noUnchecked*` flag. Inference does the work — no `as any`, ever.
 - 🎯 **Renderer-agnostic.** Canvas · WebGL · WebGPU · PIXI · Three.js · DOM · terminal. Pick one. Switch tomorrow.
 - ⏱️ **Deterministic loop.** Variable timestep by default; opt into fixed-step + interpolation when physics need to be reproducible.
 - 🎮 **Input, normalized.** Keyboard + pointer + **gamepad** (with radial-deadzoned sticks and edge detection). Headless no-ops cleanly — same API on Node.
 - 🎬 **Typed scene FSM.** `menu → start → playing` with compile-time checks. Send a wrong event? TypeScript stops you.
 - 🧠 **Memoized selectors.** Reselect-style derived state, ~30 LOC, exact same shape.
+- 🎲 **Seeded RNG.** Reproducible procedural generation — `int`/`pick`/`shuffle`/`fork`, JSON-serializable state for save & resume.
+- ⏲️ **Game-time timers.** `after` / `every` driven by your loop's `dt` — pause, slow-mo, and fixed-step just work. Unlike `setTimeout`.
 - 🎞️ **Record & replay.** Capture every dispatched action; replay it deterministically. Bug repro, regression tests, server-authoritative validation — all in JSON.
 - 🖥️ **Browser & Node.** Headless simulation, server-authoritative play, CI snapshot tests — same code, two runtimes.
 - 📦 **Dual ESM + CJS.** `publint` clean. Provenance signed. Tree-shakeable.
@@ -94,6 +96,8 @@ That's state + actions. Add `update` for input handling, `render` for drawing, a
 | **`createKeyboard`** / **`createPointer`** / **`createGamepad`** | Normalized input — keys, pointer, and Standard Gamepad with edge detection. No-op stubs on the server. |
 | **`createMachine`**                                              | Compile-time-checked finite state machine for scenes/menus.                                            |
 | **`createSelector`**                                             | Reselect-style memoization, ~30 LOC.                                                                   |
+| **`createRandom`**                                               | Seeded deterministic RNG — `int`/`pick`/`shuffle`/`fork`, serializable state for save & replay.        |
+| **`createTimers`**                                               | Game-time `after` / `every` scheduling, driven by your loop's `dt` (respects pause & slow-mo).         |
 | **`createRecorder`** / **`replay`**                              | Deterministic record + replay of every action. JSON-serialisable.                                      |
 
 [**→ Full API reference**](https://yankouskia.github.io/gameplate/api/)
@@ -132,10 +136,10 @@ A handful of composable functions. Pick the ones you need. Ignore the rest.
 
 ## Quality bar
 
-- ✅ 141/141 tests, ≥ 90 % line coverage
+- ✅ 204/204 tests, ≥ 90 % line coverage
 - ✅ CI matrix: Node 20 / 22 / 24 × Ubuntu / macOS / Windows
 - ✅ `publint` + `@arethetypeswrong/cli` clean on every PR
-- ✅ Size limit: < 4 KB gzipped ESM, enforced in CI
+- ✅ Size limit: < 5 KB gzipped ESM (full barrel), enforced in CI — and tree-shakeable
 - ✅ CodeQL security analysis on every PR
 - ✅ npm provenance on every release (OIDC trusted publishing)
 
