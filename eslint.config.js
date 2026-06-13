@@ -65,7 +65,8 @@ export default tseslint.config(
       'unicorn/no-null': 'off',
       'unicorn/no-array-reduce': 'off',
       'unicorn/filename-case': ['error', { cases: { kebabCase: true, camelCase: true } }],
-      'unicorn/prefer-export-from': ['error', { ignoreUsedVariables: true }],
+      // unicorn 65 renamed `ignoreUsedVariables: true` → `checkUsedVariables: false`
+      'unicorn/prefer-export-from': ['error', { checkUsedVariables: false }],
       'unicorn/no-array-callback-reference': 'off',
       'unicorn/explicit-length-check': 'off',
 

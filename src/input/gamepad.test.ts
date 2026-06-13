@@ -59,7 +59,7 @@ describe('createGamepad', () => {
   });
 
   it('Standard button names map to W3C standard indices', () => {
-    const buttons = Array.from<boolean>({ length: 17 }).fill(false);
+    const buttons = Array.from({ length: 17 }, () => false);
     const expected: readonly StandardButton[] = [
       'A',
       'B',
